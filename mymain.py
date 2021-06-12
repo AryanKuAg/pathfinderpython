@@ -50,7 +50,7 @@ class Spot:
         return self.color == PURPLE
     
     def reset(self):
-        return self.color == WHITE
+        self.color = WHITE
 
     def make_closed(self):
         self.color = RED
@@ -129,6 +129,7 @@ def main(win, width):
     run = True
     started = False
     while run:
+        draw(win, grid, ROWS, width)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -140,11 +141,11 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 spot = grid[row][col]
-                if not start:
+                if not start and spot != end:
                     start = spot
                     start.make_start()
 
-                elif not end:
+                elif not end and spot != start:
                     end = spot
                     end.make_end()
 
@@ -153,7 +154,14 @@ def main(win, width):
 
 
             elif pygame.mouse.get_pressed()[2]: #right
-                pass
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, ROWS, width)
+                spot = grid[row][col]
+                spot.reset()
+                if spot == start:
+                    start = None
+                elif spot == end:
+                    end = None
 
     pygame.quit()
 
